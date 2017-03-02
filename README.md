@@ -6,8 +6,8 @@ A Python script for downloading performance data from the [BingAds API version 9
 ## Resulting data
 **BingAds Performance Downloader** gives measures such as impressions, clicks and cost. The script creates one csv file per day in a specified time range:
 
-    /tmp/bingads/2016/05/02/bing/download.csv
-    /tmp/bingads/2016/05/03/bing/download.csv
+    /tmp/bingads/2016/05/02/bing/ad_performance.csv.gz
+    /tmp/bingads/2016/05/03/bing/ad_performance.csv.gz
     
     
  Each line contains one ad for one day:

@@ -10,7 +10,7 @@ def data_dir() -> str:
 
 def data_file() -> str:
     """The name of the file the result is written to"""
-    return 'download.csv.gz'
+    return 'ad_performance.csv.gz'
 
 
 def first_date() -> str:
