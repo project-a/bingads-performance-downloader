@@ -90,10 +90,9 @@ This will open a webbrowser to allow the OAuth2 credentials to access the API on
 ![](docs/oauth1.png)
 ![](docs/oauth2.png)
 
-Copy the url from the browser as instructed in the commandline. Copy and paste it into the command line where you are running 
-`bingads-downloader-refresh-oauth2-token` and press enter. 
+**Copy the url from the browser** as instructed in the commandline. Paste it into the command line where you are running 
+`refresh-bingsads-api-oauth2-token` and press enter. 
 
-![](docs/oauth3.png)
 
 The script should complete and display an offline **refresh token** on the command line. Keep this refresh token for the download step.
 
