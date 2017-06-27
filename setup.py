@@ -7,7 +7,7 @@ setup(
     description="Downloads data from the BingAds Api to local files for usage in a data warehouse",
 
     install_requires=[
-        'bingads==10.4.11',
+        'bingads==10.4.12',
         'click>=6.0'
     ],
 
