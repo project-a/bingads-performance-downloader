@@ -40,13 +40,13 @@ A Python script for downloading performance data from the [BingAds API version 9
   
 ### Installation
 
- The Google AdWords Performance Downloader requires:
+ The Bing AdWords Performance Downloader requires:
 
     Python (>= 3.5)
     bingads (>=10.4.11)
     click (>=6.0)
 
-The easiest way to install google-adwords-downloader is using pip
+The easiest way to install bing-adwords-downloader is using pip
 
     pip install git+https://github.com/mara/bingads-performance-downloader.git
 
