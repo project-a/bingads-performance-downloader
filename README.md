@@ -68,7 +68,7 @@ Getting **developer token**:
 Go to this page https://developers.bingads.microsoft.com/Account, you will find your developer-token. You have to be logged in with your Microsoft account.
 
 Getting **oauth client id** and **oauth client secret** :
-Go to this page https://apps.dev.microsoft.com/. You have to be logged in with your Microsoft account.
+Go to this page https://apps.dev.microsoft.com/. You have to be logged in with your Microsoft account. Set a **Native-Application** and allow **built-in redirect URIs**. 
 
 ![](docs/Register-App-for-BingAds.png)
 
