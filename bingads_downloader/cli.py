@@ -10,7 +10,7 @@ def config_option(config_function):
 
     return lambda function: \
         click.option('--' + config_function.__name__,
-                     help=config_function.__doc__ + '. Example: "' + config_function() + '"') \
+                     help=f'{config_function.__doc__}. Default: "{config_function()}"') \
             (function)
 
 
@@ -39,7 +39,10 @@ def refresh_oauth2_token(**kwargs):
 @config_option(config.oauth2_client_secret)
 @config_option(config.oauth2_refresh_token)
 @config_option(config.data_dir)
+@config_option(config.data_file)
 @config_option(config.first_date)
+@config_option(config.environment)
+@config_option(config.timeout)
 def download_data(**kwargs):
     """
     Downloads data.
