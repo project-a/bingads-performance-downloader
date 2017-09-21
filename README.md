@@ -107,3 +107,38 @@ To run the BingAds Performance Downloader call `download-bingsads-performance-da
     --oauth2_refresh_token MCQL58pByMOdq*sU7 \
     --data_dir /tmp/bingads
 
+For all options, see 
+
+    $ download-bingsads-performance-data --help
+    Usage: download-bingsads-performance-data [OPTIONS]
+    
+      Downloads data. When options are not specified, then the defaults from
+      config.py are used.
+    
+    Options:
+      --developer_token TEXT       The developer token that is used to access the
+                                   BingAds API. Default: "012345679ABCDEF"
+      --oauth2_client_id TEXT      The Oauth client id obtained from the BingAds
+                                   developer center. Default:
+                                   "abc1234-1234-1234-abc-abcd1234"
+      --oauth2_client_secret TEXT  The Oauth client secret obtained from the
+                                   BingAds developer center. Default:
+                                   "ABCDefgh!1234567890"
+      --oauth2_refresh_token TEXT  The Oauth refresh token returned from the
+                                   adwords-downloader-refresh-oauth2-token script.
+                                   Default: "ABCDefgh!1234567890ABCDefgh!123456789
+                                   0ABCDefgh!1234567890ABCDefgh!1234567890ABCDefgh
+                                   !1234567890ABCDefgh!1234567890ABCDefgh!12345678
+                                   90"
+      --data_dir TEXT              The directory where result data is written to.
+                                   Default: "/tmp/bingads/"
+      --data_file TEXT             The name of the file the result is written to.
+                                   Default: "ad_performance.csv.gz"
+      --first_date TEXT            The first day from which on data will be
+                                   downloaded. Default: "2015-01-01"
+      --environment TEXT           The deployment environment. Default:
+                                   "production"
+      --timeout TEXT               The maximum amount of time (in milliseconds)
+                                   that you want to wait for the report download.
+                                   Default: "3600000"
+      --help                       Show this message and exit.
