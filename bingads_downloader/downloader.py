@@ -201,7 +201,6 @@ def authenticate_with_oauth(api_client):
 
     # load refresh token from config
     refresh_token = config.oauth2_refresh_token()
-
     try:
         # If we have a refresh token let's refresh it
         if refresh_token is not None:
@@ -209,10 +208,11 @@ def authenticate_with_oauth(api_client):
                 refresh_token)
         else:
             print('No refresh token found. Please run refresh refresh-bingads-api-oauth2-token')
-            sys.exit(0)
-    except OAuthTokenRequestException:
-        print('No refresh token found. Please run refresh refresh-bingads-api-oauth2-token')
-        sys.exit(0)
+            sys.exit(1)
+    except OAuthTokenRequestException as exc:
+        print('Authentication error. Could be necessary to run refresh refresh-bingads-api-oauth2-token')
+        print(exc)
+        sys.exit(1)
 
 
 def refresh_oauth_token():
