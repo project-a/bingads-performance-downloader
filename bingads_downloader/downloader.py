@@ -211,6 +211,7 @@ def authenticate_with_oauth(api_client):
             sys.exit(1)
     except OAuthTokenRequestException as exc:
         print('Authentication error. Could be necessary to run refresh refresh-bingads-api-oauth2-token')
+        print(exc)
         sys.exit(1)
 
 
