@@ -210,8 +210,11 @@ def authenticate_with_oauth(api_client):
             print('No refresh token found. Please run refresh refresh-bingads-api-oauth2-token')
             sys.exit(1)
     except OAuthTokenRequestException as exc:
-        print('Authentication error. Could be necessary to run refresh refresh-bingads-api-oauth2-token')
-        print(exc)
+        print('Authentication error. Could be necessary to run refresh refresh-bingads-api-oauth2-token', file=sys.stderr)
+        print('Ensure that the registered application type is Native-Application', file=sys.stderr)
+        print(' - client id: {}'.format(config.oauth2_client_id()), file=sys.stderr)
+        print(' - refresh_token: {}'.format(refresh_token), file=sys.stderr)
+        print(exc, file=sys.stderr)
         sys.exit(1)
 
 
