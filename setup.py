@@ -21,5 +21,6 @@ setup(
             'download-bingsads-performance-data=bingads_downloader.cli:download_data',
             'refresh-bingsads-api-oauth2-token=bingads_downloader.cli:refresh_oauth2_token'
         ]
-    }
+    },
+    python_requires='>=3.3'
 )
