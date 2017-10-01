@@ -1,17 +1,17 @@
 # BingAds Performance Downloader
 
 A Python script for downloading performance data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://github.com/BingAds/BingAds-Python-SDK).
- 
+
 
 ## Resulting data
 **BingAds Performance Downloader** gives measures such as impressions, clicks and cost. The script creates one csv file per day in a specified time range:
 
     /tmp/bingads/2016/05/02/bing/ad_performance.csv.gz
     /tmp/bingads/2016/05/03/bing/ad_performance.csv.gz
-    
-    
+
+
  Each line contains one ad for one day:
- 
+
     GregorianDate        | 2/12/2016
     AccountId            | 17837800573
     AccountName          | Online Veiling Gent
@@ -33,17 +33,17 @@ A Python script for downloading performance data from the [BingAds API version 1
     Conversions          | 0
     Revenue              | 0
     Network              | Bing and Yahoo! search
-    
+
 
 ## Getting Started
 
-  
+
 ### Installation
 
  The Bing AdWords Performance Downloader requires:
 
     Python (>= 3.5)
-    bingads (>=10.4.11)
+    bingads (==11.5.5.1)
     click (>=6.0)
 
 The easiest way to install bing-adwords-downloader is using pip
@@ -61,14 +61,14 @@ If you want to install it in a virtual environment:
 
 Getting access to the Bing Ads Account:
 
-Ask your SEM manager to invite you to the Bing Ads Account of the company. The role should be Super Admin. Once you receive the confirmation e-mail 
-(may take up to 2 hours), you should click on the link and create a Microsoft account. 
+Ask your SEM manager to invite you to the Bing Ads Account of the company. The role should be Super Admin. Once you receive the confirmation e-mail
+(may take up to 2 hours), you should click on the link and create a Microsoft account.
 
 Getting **developer token**:
 Go to this page https://developers.bingads.microsoft.com/Account, you will find your developer-token. You have to be logged in with your Microsoft account.
 
 Getting **oauth client id** and **oauth client secret** :
-Go to this page https://apps.dev.microsoft.com/. You have to be logged in with your Microsoft account. Set a **Native-Application** and allow **built-in redirect URIs**. 
+Go to this page https://apps.dev.microsoft.com/. You have to be logged in with your Microsoft account. Set a **Native-Application** and allow **built-in redirect URIs**.
 
 ![](docs/Register-App-for-BingAds.png)
 
@@ -84,14 +84,14 @@ In order to access the BingAds API you have to obtain the OAuth2 credentials fro
     $ refresh-bingsads-api-oauth2-token \
     --developer_token ABCDEFEGHIJKL \
     --oauth2_client_id 123456789 \
-    --oauth2_client_secret aBcDeFg 
+    --oauth2_client_secret aBcDeFg
 
 This will open a webbrowser to allow the OAuth2 credentials to access the API on your behalf.  
 ![](docs/oauth1.png)
 ![](docs/oauth2.png)
 
-**Copy the url from the browser** as instructed in the commandline. Paste it into the command line where you are running 
-`refresh-bingsads-api-oauth2-token` and press enter. 
+**Copy the url from the browser** as instructed in the commandline. Paste it into the command line where you are running
+`refresh-bingsads-api-oauth2-token` and press enter.
 
 
 The script should complete and display an offline **refresh token** on the command line. Keep this refresh token for the download step.
@@ -107,14 +107,14 @@ To run the BingAds Performance Downloader call `download-bingsads-performance-da
     --oauth2_refresh_token MCQL58pByMOdq*sU7 \
     --data_dir /tmp/bingads
 
-For all options, see 
+For all options, see
 
     $ download-bingsads-performance-data --help
     Usage: download-bingsads-performance-data [OPTIONS]
-    
+
       Downloads data. When options are not specified, then the defaults from
       config.py are used.
-    
+
     Options:
       --developer_token TEXT       The developer token that is used to access the
                                    BingAds API. Default: "012345679ABCDEF"
