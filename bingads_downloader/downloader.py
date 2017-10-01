@@ -2,6 +2,7 @@ import datetime
 import errno
 import sys
 import tempfile
+import urllib
 import webbrowser
 from pathlib import Path
 
@@ -59,6 +60,7 @@ def download_ad_performance_data(api_client: BingReportClient):
     first_date = datetime.datetime.strptime(config.first_date(), '%Y-%m-%d')
     last_date = datetime.datetime.now() - datetime.timedelta(days=1)
     current_date = last_date
+    remaining_attempts = config.total_attempts_for_single_file
     while current_date >= first_date:
         print(current_date)
         relative_filepath = Path('{date:%Y/%m/%d}/bing/'.format(
@@ -70,9 +72,22 @@ def download_ad_performance_data(api_client: BingReportClient):
             with tempfile.TemporaryDirectory() as tmp_dir:
                 tmp_filepath = Path(tmp_dir, relative_filepath)
                 tmp_filepath.parent.mkdir(exist_ok=True, parents=True)
-                submit_and_download(report_request, api_client, str(filepath))
-
-        current_date += datetime.timedelta(days=-1)
+                try:
+                    start_time = time.time()
+                    submit_and_download(report_request, api_client, str(filepath))
+                    print('Downloaded data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
+                          .format(date=current_date, elapsed=time.time() - start_time))
+                    current_date += datetime.timedelta(days=-1)
+                    remaining_attempts = config.total_attempts_for_single_file
+                except urllib.error.URLError as url_error:
+                    if remaining_attempts == 0:
+                        print('Too many failed attempts while downloading this day, quitting', file=sys.stderr)
+                        raise
+                    print('ERROR WHILE DOWNLOADING REPORT, RETRYING in {} seconds, attempt {}#...'
+                          .format(config.retry_timeout_interval, remaining_attempts), file=sys.stderr)
+                    print(url_error, file=sys.stderr)
+                    time.sleep(config.retry_timeout_interval)
+                    remaining_attempts -= 1
 
 
 def build_ad_performance_request_for_single_day(api_client: BingReportClient,
