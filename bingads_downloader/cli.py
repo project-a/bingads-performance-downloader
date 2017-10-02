@@ -12,8 +12,8 @@ def config_option(config_function):
 
     return lambda function: \
         click.option('--' + config_function.__name__,
-                     help=f'{config_function.__doc__}. Default: "{config_function()}"') \
-            (function)
+                     help=f'{config_function.__doc__}. Default: "{config_function()}"',
+                     default=config_function())(function)
 
 
 def apply_options(kwargs):
