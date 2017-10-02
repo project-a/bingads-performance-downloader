@@ -45,3 +45,12 @@ def oauth2_refresh_token() -> str:
 def timeout() -> int:
     """The maximum amount of time (in milliseconds) that you want to wait for the report download"""
     return 3600000
+
+
+def total_attempts_for_single_file() -> int:
+    """The attempts to donwload a single file in case of HTTP errors or timeouts"""
+    return 5
+
+def retry_timeout_interval() -> int:
+    """number of seconds to wait before trying again to download a single day"""
+    return 10
