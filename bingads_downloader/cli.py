@@ -7,13 +7,12 @@ from bingads_downloader import downloader,config
 from functools import partial
 
 
-def config_option(config_function):
+def config_option(config_function, default_value = None):
     """Helper decorator that turns an option function into a cli option"""
-
     return lambda function: \
         click.option('--' + config_function.__name__,
                      help=f'{config_function.__doc__}. Default: "{config_function()}"',
-                     default=config_function())(function)
+                     default=default_value)(function)
 
 
 def apply_options(kwargs):
