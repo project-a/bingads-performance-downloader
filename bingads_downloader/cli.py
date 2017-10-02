@@ -56,6 +56,8 @@ def refresh_oauth2_token(**kwargs):
 @config_option(config.first_date)
 @config_option(config.environment)
 @config_option(config.timeout)
+@config_option(config.total_attempts_for_single_file)
+@config_option(config.retry_timeout_interval)
 def download_data(**kwargs):
     """
     Downloads data.

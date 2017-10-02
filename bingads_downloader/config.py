@@ -48,8 +48,9 @@ def timeout() -> int:
 
 
 def total_attempts_for_single_file() -> int:
-    """The attempts to donwload a single file in case of HTTP errors or timeouts"""
+    """The attempts to download a single file in case of HTTP errors or timeouts"""
     return 5
+
 
 def retry_timeout_interval() -> int:
     """number of seconds to wait before trying again to download a single day"""
