@@ -32,6 +32,7 @@ def show_version():
         print('Warning: cannot determine module version')
         print(sys.exc_info())
 
+
 @click.command()
 @config_option(config.developer_token)
 @config_option(config.oauth2_client_id)
@@ -41,8 +42,8 @@ def refresh_oauth2_token(**kwargs):
     Creates a new OAuth2 token.
     When options are not specified, then the defaults from config.py are used.
     """
-    show_version()
     apply_options(kwargs)
+    show_version()
     downloader.refresh_oauth_token()
 
 
@@ -63,6 +64,6 @@ def download_data(**kwargs):
     Downloads data.
     When options are not specified, then the defaults from config.py are used.
     """
-    show_version()
     apply_options(kwargs)
+    show_version()
     downloader.download_data()

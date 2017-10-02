@@ -73,7 +73,10 @@ def download_ad_performance_data(api_client: BingReportClient):
                 tmp_filepath = Path(tmp_dir, relative_filepath)
                 tmp_filepath.parent.mkdir(exist_ok=True, parents=True)
                 try:
+                    start_time = time.time()
                     submit_and_download(report_request, api_client, str(filepath))
+                    print('Downloaded {date:%Y-%m-%d} in {elapsed} seconds'
+                          .format(date=current_date, elapsed=time.time() - start_time))
                     current_date += datetime.timedelta(days=-1)
                     remaining_attempts = config.total_attempts_for_single_file
                 except urllib.error.URLError as url_error:
