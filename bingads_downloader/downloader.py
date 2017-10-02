@@ -75,7 +75,7 @@ def download_ad_performance_data(api_client: BingReportClient):
                 try:
                     start_time = time.time()
                     submit_and_download(report_request, api_client, str(filepath))
-                    print('Downloaded {date:%Y-%m-%d} in {elapsed} seconds'
+                    print('Downloaded data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                           .format(date=current_date, elapsed=time.time() - start_time))
                     current_date += datetime.timedelta(days=-1)
                     remaining_attempts = config.total_attempts_for_single_file
@@ -83,7 +83,7 @@ def download_ad_performance_data(api_client: BingReportClient):
                     if remaining_attempts == 0:
                         print('Too many failed attempts while downloading this day, quitting', file=sys.stderr)
                         raise
-                    print('ERROR IN DOWNLOADING REPORT, RETRYING in {} seconds, attempt {}#...'
+                    print('ERROR WHILE DOWNLOADING REPORT, RETRYING in {} seconds, attempt {}#...'
                           .format(config.retry_timeout_interval, remaining_attempts), file=sys.stderr)
                     print(url_error, file=sys.stderr)
                     time.sleep(config.retry_timeout_interval)
