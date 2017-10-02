@@ -1,5 +1,7 @@
 """Command line interface for adwords downloader"""
 
+import sys
+
 import click
 from bingads_downloader import downloader,config
 from functools import partial
@@ -20,6 +22,16 @@ def apply_options(kwargs):
         if value: setattr(config, key, partial(lambda v: v, value))
 
 
+def show_version():
+    """Shows the package version in logs, if possible"""
+    try:
+        import pkg_resources
+        version = pkg_resources.require("bingads-performance-downloader")[0].version
+        print('Bing ads performance downloader version {}'.format(version))
+    except:
+        print('Warning: cannot determine module version')
+        print(sys.exc_info())
+
 @click.command()
 @config_option(config.developer_token)
 @config_option(config.oauth2_client_id)
@@ -29,6 +41,7 @@ def refresh_oauth2_token(**kwargs):
     Creates a new OAuth2 token.
     When options are not specified, then the defaults from config.py are used.
     """
+    show_version()
     apply_options(kwargs)
     downloader.refresh_oauth_token()
 
@@ -48,5 +61,6 @@ def download_data(**kwargs):
     Downloads data.
     When options are not specified, then the defaults from config.py are used.
     """
+    show_version()
     apply_options(kwargs)
     downloader.download_data()
