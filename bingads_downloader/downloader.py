@@ -8,7 +8,7 @@ from pathlib import Path
 
 from bingads import (AuthorizationData, OAuthAuthorization, OAuthDesktopMobileAuthCodeGrant,
                      OAuthTokenRequestException)
-from bingads.reporting import ReportingServiceManager, time
+from bingads.v11.reporting.reporting_service_manager import ReportingServiceManager, time
 from bingads.service_client import ServiceClient
 
 from bingads_downloader import config
@@ -28,7 +28,7 @@ class BingReportClient(ServiceClient):
 
         self.client = super(BingReportClient, self).__init__(service='ReportingService',
                                                              authorization_data=authorization_data,
-                                                             environment='production', version='v9')
+                                                             environment='production', version='v11')
 
 
 def download_data():
@@ -166,7 +166,8 @@ def submit_and_download(report_request, api_client, data_dir):
         data_dir: target directory of the files containing the reports
     """
 
-    current_reporting_service_manager = ReportingServiceManager(
+    current_reporting_service_manager = \
+        ReportingServiceManager(
         authorization_data=api_client.authorization_data,
         poll_interval_in_milliseconds=5000,
         environment='production',
