@@ -67,7 +67,7 @@ def download_ad_performance_data(api_client: BingReportClient):
             date=current_date))
         filepath = ensure_data_directory(relative_filepath)
 
-        if not filepath.is_file() or (last_date - current_date).days < 31:
+        if not filepath.is_dir() or (last_date - current_date).days < 31:
             report_request = build_ad_performance_request_for_single_day(api_client, current_date)
             with tempfile.TemporaryDirectory() as tmp_dir:
                 tmp_filepath = Path(tmp_dir, relative_filepath)
