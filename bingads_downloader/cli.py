@@ -51,11 +51,12 @@ def refresh_oauth2_token(**kwargs):
 @config_option(config.oauth2_client_secret)
 @config_option(config.oauth2_refresh_token)
 @config_option(config.data_dir)
-@config_option(config.data_file)
+@config_option(config.ad_performance_data_file)
+@config_option(config.keyword_performance_data_file)
 @config_option(config.first_date)
 @config_option(config.environment)
 @config_option(config.timeout)
-@config_option(config.total_attempts_for_single_file)
+@config_option(config.total_attempts_for_single_day)
 @config_option(config.retry_timeout_interval)
 def download_data(**kwargs):
     """
