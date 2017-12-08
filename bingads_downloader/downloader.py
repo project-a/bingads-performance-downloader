@@ -63,7 +63,7 @@ def download_performance_data(api_client: BingReportClient):
     remaining_attempts = config.total_attempts_for_single_day
     while current_date >= first_date:
         print(current_date)
-        relative_filepath = Path('{date:%Y/%m/%d}/bing/'.format(
+        relative_filepath = Path('{date:%Y/%m/%d}/bing_v2/'.format(
             date=current_date))
         filepath = ensure_data_directory(relative_filepath)
 
