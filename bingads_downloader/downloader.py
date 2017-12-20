@@ -70,18 +70,29 @@ def download_performance_data(api_client: BingReportClient):
         if not filepath.is_dir() or (last_date - current_date).days < 31:
             report_request_ad = build_ad_performance_request_for_single_day(api_client, current_date)
             report_request_keyword = build_keyword_performance_request_for_single_day(api_client, current_date)
+            report_request_campaign = build_campaign_performance_request_for_single_day(api_client, current_date)
+
 
             with tempfile.TemporaryDirectory() as tmp_dir:
                 tmp_filepath = Path(tmp_dir, relative_filepath)
                 tmp_filepath.parent.mkdir(exist_ok=True, parents=True)
                 try:
                     start_time = time.time()
+                    print('About to download ad data for {date:%Y-%m-%d}'
+                          .format(date=current_date))
                     submit_and_download(report_request_ad, api_client, str(filepath), config.ad_performance_data_file())
                     print('Successfully downloaded ad data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                           .format(date=current_date, elapsed=time.time() - start_time))
                     start_time = time.time()
+                    print('About to download keyword data for {date:%Y-%m-%d}'
+                          .format(date=current_date))
                     submit_and_download(report_request_keyword, api_client, str(filepath), config.keyword_performance_data_file())
                     print('Successfully downloaded keyword data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
+                      .format(date=current_date, elapsed=time.time() - start_time))
+                    print('About to download campaign data for {date:%Y-%m-%d}'
+                          .format(date=current_date))
+                    submit_and_download(report_request_campaign, api_client, str(filepath), config.campaign_performance_data_file())
+                    print('Successfully downloaded campaign data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                       .format(date=current_date, elapsed=time.time() - start_time))
                     # date is decreased only if the download above does not fail
                     current_date -= datetime.timedelta(days=1)
@@ -96,6 +107,13 @@ def download_performance_data(api_client: BingReportClient):
                     time.sleep(config.retry_timeout_interval)
                     remaining_attempts -= 1
         else:
+            if not filepath.is_dir():
+                print(f'Skipping the day since directory {str(filepath)} already exists')
+
+            if (last_date - current_date).days < 31:
+                print(f'Skipping the day since {str(last_date)} is more than 31 days before {str(current_date)}')
+
+
             current_date -= datetime.timedelta(days=1)
 
 
@@ -229,6 +247,48 @@ def build_keyword_performance_request_for_single_day(api_client: BingReportClien
     report_request.Sort = report_sorts
     return report_request
 
+
+def build_campaign_performance_request_for_single_day(api_client: BingReportClient,
+                                                     current_date: datetime):
+    """
+    Creates a Campaign report request object with hard coded parameters for a give date.
+    Args:
+        api_client: BingApiClient object
+        current_date: date for which the report object will be created
+
+    Returns:
+        A report request object with our specific hard coded settings for a given date
+    """
+    report_request = api_client.factory.create('CampaignPerformanceReportRequest')
+    report_request.Format = 'Csv'
+    report_request.ReportName = 'My Campaign Performance Report'
+    report_request.ReturnOnlyCompleteData = False
+    report_request.Language = 'English'
+    report_request.Aggregation = 'Daily'
+    report_time = api_client.factory.create('ReportTime')
+
+    # You may either use a custom date range
+    custom_date_range_start = api_client.factory.create('Date')
+    custom_date_range_start.Day = current_date.day
+    custom_date_range_start.Month = current_date.month
+    custom_date_range_start.Year = current_date.year
+    report_time.CustomDateRangeStart = custom_date_range_start
+    report_time.CustomDateRangeEnd = custom_date_range_start
+    report_time.PredefinedTime = None
+    report_request.Time = report_time
+
+    report_columns = api_client.factory.create('ArrayOfCampaignPerformanceReportColumn')
+    report_columns.CampaignPerformanceReportColumn.append([
+        "AccountName",
+        "AccountId",
+        "TimePeriod",
+        "CampaignName",
+        "CampaignId",
+        "Spend",
+        "CampaignLabels"
+    ])
+    report_request.Columns = report_columns
+    return report_request
 
 def submit_and_download(report_request, api_client, data_dir, data_file):
     """

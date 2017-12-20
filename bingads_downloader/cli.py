@@ -1,4 +1,4 @@
-"""Command line interface for adwords downloader"""
+"""Command line interface for Bing downloader"""
 
 import sys
 
