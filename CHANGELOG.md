@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.1
+*2017-01-10
+
+- fixes check for existing files
+
+## 1.2.0
+*2017-11-07
+
+- Uses v11 reporting
+
 ## 1.1.0 
 *2017-09-21 
 
