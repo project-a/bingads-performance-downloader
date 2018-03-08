@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.0
-2017-12-06
+2018-03-08
 - Download both the keywords and the ad performance reports as two separate files (major version bump as the file name is different)
 
 ## 1.2.1
