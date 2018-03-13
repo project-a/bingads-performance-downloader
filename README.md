@@ -42,9 +42,9 @@ A Python script for downloading performance data from the [BingAds API version 1
 
  The Bing AdWords Performance Downloader requires:
 
-    Python (>= 3.5)
-    bingads (==11.5.5.1)
-    click (>=6.0)
+    Python (>= 3.6)
+    bingads (automatically installed by setup.py)
+    click (automatically installed by setup.py)
 
 The easiest way to install bing-adwords-downloader is using pip
 
@@ -86,7 +86,7 @@ In order to access the BingAds API you have to obtain the OAuth2 credentials fro
     --oauth2_client_id 123456789 \
     --oauth2_client_secret aBcDeFg
 
-This will open a webbrowser to allow the OAuth2 credentials to access the API on your behalf.  
+This will open a web browser to allow the OAuth2 credentials to access the API on your behalf.  
 ![](docs/oauth1.png)
 ![](docs/oauth2.png)
 

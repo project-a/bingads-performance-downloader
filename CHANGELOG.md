@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.2
+*2018-03-13
+
+- cosmetic changes, upgrade bingads dependency
+
 ## 1.2.1
 *2017-01-10
 
