@@ -53,6 +53,7 @@ def refresh_oauth2_token(**kwargs):
 @config_option(config.data_dir)
 @config_option(config.ad_performance_data_file)
 @config_option(config.keyword_performance_data_file)
+@config_option(config.campaign_performance_data_file)
 @config_option(config.first_date)
 @config_option(config.environment)
 @config_option(config.timeout)

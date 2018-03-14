@@ -1,16 +1,16 @@
 # BingAds Performance Downloader
 
-A Python script for downloading performance data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://github.com/BingAds/BingAds-Python-SDK).
+A Python script for downloading performance and keyword data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://github.com/BingAds/BingAds-Python-SDK).
 
 
 ## Resulting data
-**BingAds Performance Downloader** gives measures such as impressions, clicks and cost. The script creates one csv file per day in a specified time range:
+**BingAds Performance Downloader** gives measures such as impressions, clicks and cost. The script creates three csv files per day in a specified time range, for example:
 
-    /tmp/bingads/2016/05/02/bing/ad_performance.csv.gz
     /tmp/bingads/2016/05/03/bing/ad_performance.csv.gz
+    /tmp/bingads/2016/05/03/bing/keyword_performance.csv.gz
+    /tmp/bingads/2016/05/03/bing/campaign_performance.csv.gz
 
-
- Each line contains one ad for one day:
+ Each line of `keyword_performance` contains one ad for one day:
 
     GregorianDate        | 2/12/2016
     AccountId            | 17837800573
@@ -34,6 +34,44 @@ A Python script for downloading performance data from the [BingAds API version 1
     Revenue              | 0
     Network              | Bing and Yahoo! search
 
+While `ad_performance` has these columns:
+
+    AccountName          | Name
+    AccountNumber        | X001342
+    AccountId            | 67688
+    TimePeriod           | 2018-02-03
+    CampaignName         | 12. Campaign name     
+    CampaignId           | 1234567
+    AdGroupName          | Name of the group group
+    AdId                 | 8123456789
+    AdGroupId            | 123456789011
+    AdTitle              | title of the ad, optional
+    AdDescription        | Description of the ad
+    AdType               | Expanded text ad
+    Impressions          | 2
+    Clicks               | 3
+    Ctr                  | 45.78%
+    Spend                | 4.34
+    AveragePosition      | 1.00
+    Conversions          | 12
+    ConversionRate       | 23.8%
+    CostPerConversion    | 2.34
+    DeviceType           | Computer
+    AccountStatus        | Active
+    CampaignStatus       | Active
+    AdGroupStatus        | Active
+    AdLabels             | "(label1=value)(label2=value2)"
+
+
+And `Campaign performance` is:
+
+    AccountName          | Name of the account
+    AccountId            | 123456
+    TimePeriod           | 2018-01-10
+    CampaignName         | 1. Banner 03
+    CampaignId           | 1234567
+    Spend                | 1.23
+    CampaignLabel        | {channel=display}
 
 ## Getting Started
 
@@ -42,9 +80,9 @@ A Python script for downloading performance data from the [BingAds API version 1
 
  The Bing AdWords Performance Downloader requires:
 
-    Python (>= 3.5)
-    bingads (==11.5.5.1)
-    click (>=6.0)
+    Python (>= 3.6)
+    bingads (automatically installed by setup.py)
+    click (automatically installed by setup.py)
 
 The easiest way to install bing-adwords-downloader is using pip
 
@@ -86,7 +124,7 @@ In order to access the BingAds API you have to obtain the OAuth2 credentials fro
     --oauth2_client_id 123456789 \
     --oauth2_client_secret aBcDeFg
 
-This will open a webbrowser to allow the OAuth2 credentials to access the API on your behalf.  
+This will open a web browser to allow the OAuth2 credentials to access the API on your behalf.
 ![](docs/oauth1.png)
 ![](docs/oauth2.png)
 
@@ -107,7 +145,7 @@ To run the BingAds Performance Downloader call `download-bingsads-performance-da
     --oauth2_refresh_token MCQL58pByMOdq*sU7 \
     --data_dir /tmp/bingads
 
-For all options, see
+For all options, see the _help_
 
     $ download-bingsads-performance-data --help
     Usage: download-bingsads-performance-data [OPTIONS]
@@ -116,7 +154,7 @@ For all options, see
       config.py are used.
 
     Options:
-
+    
       --developer_token TEXT          The developer token that is used to access
                                       the BingAds API. Default: "012345679ABCDEF"
       --oauth2_client_id TEXT         The Oauth client id obtained from the
@@ -133,22 +171,32 @@ For all options, see
                                       ABCDefgh!1234567890"
       --data_dir TEXT                 The directory where result data is written
                                       to. Default: "/tmp/bingads/"
-      --data_file TEXT                The name of the file the result is written
-                                      to. Default: "ad_performance.csv.gz"
+      --ad_performance_data_file TEXT
+                                      The name of the file the ad performance
+                                      result is written to. Default:
+                                      "ad_performance.csv.gz"
+      --keyword_performance_data_file TEXT
+                                      The name of the file the keyword performance
+                                      result is written to. Default:
+                                      "keyword_performance.csv.gz"
+      --campaign_performance_data_file TEXT
+                                        The name of the file the campaign
+                                        performance result is written to. Default:
+                                        "campaign_performance.csv.gz"
       --first_date TEXT               The first day from which on data will be
                                       downloaded. Default: "2015-01-01"
       --environment TEXT              The deployment environment. Default:
                                       "production"
-      --timeout INTEGER               The maximum amount of time (in milliseconds)
+      --timeout TEXT                  The maximum amount of time (in milliseconds)
                                       that you want to wait for the report
                                       download. Default: "3600000"
-      --total_attempts_for_single_file INTEGER
-                                      The attempts to download a single file in
-                                      case of HTTP errors or timeouts. Default:
-                                      "5"
-      --retry_timeout_interval INTEGER
-                                      number of seconds to wait before trying
+      --total_attempts_for_single_day TEXT
+                                      The attempts to download a single day (ad
+                                      and keyword performance) in case of HTTP
+                                      errors or timeouts. Default: "5"
+      --retry_timeout_interval TEXT   number of seconds to wait before trying
                                       again to download a single day. Default:
                                       "10"
       --help                          Show this message and exit.
+
 

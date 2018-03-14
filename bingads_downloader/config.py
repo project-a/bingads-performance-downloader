@@ -17,13 +17,16 @@ def keyword_performance_data_file() -> str:
     """The name of the file the keyword performance result is written to"""
     return 'keyword_performance.csv.gz'
 
+
 def campaign_performance_data_file() -> str:
-    """The name of the file the campaign performance result is written to"""
-    return 'campaign_performance.csv.gz'
+     """The name of the file the campaign performance result is written to"""
+     return 'campaign_performance.csv.gz'
+
 
 def first_date() -> str:
     """The first day from which on data will be downloaded"""
     return '2015-01-01'
+
 
 def developer_token() -> str:
     """The developer token that is used to access the BingAds API"""

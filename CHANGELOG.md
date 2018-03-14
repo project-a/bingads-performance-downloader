@@ -1,8 +1,13 @@
 # Changelog
 
 ## 2.0
-2018-03-08
+2018-03-14
 - Download both the keywords and the ad performance reports as two separate files (major version bump as the file name is different)
+
+## 1.2.2
+*2018-03-13
+
+- cosmetic changes, upgrade bingads dependency
 
 ## 1.2.1
 *2017-01-10
