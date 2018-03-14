@@ -10,17 +10,17 @@ def data_dir() -> str:
 
 def ad_performance_data_file() -> str:
     """The name of the file the ad performance result is written to"""
-    return 'ad_performance.csv.gz'
+    return 'ad_performance_v2.csv.gz'
 
 
 def keyword_performance_data_file() -> str:
     """The name of the file the keyword performance result is written to"""
-    return 'keyword_performance.csv.gz'
+    return 'keyword_performance_v2.csv.gz'
 
 
 def campaign_performance_data_file() -> str:
-     """The name of the file the campaign performance result is written to"""
-     return 'campaign_performance.csv.gz'
+    """The name of the file the campaign performance result is written to"""
+    return 'campaign_performance_v2.csv.gz'
 
 
 def first_date() -> str:
