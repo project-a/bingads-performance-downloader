@@ -68,56 +68,49 @@ def download_performance_data(api_client: BingReportClient):
             date=current_date))
         filepath = ensure_data_directory(relative_filepath)
 
-        if (last_date - current_date).days < 31:
-            report_request_ad = build_ad_performance_request_for_single_day(api_client, current_date)
-            report_request_keyword = build_keyword_performance_request_for_single_day(api_client, current_date)
-            report_request_campaign = build_campaign_performance_request_for_single_day(api_client, current_date)
+        overwrite_if_exists = (last_date - current_date).days < 31
+        if overwrite_if_exists:
+            print(f'The data for {current_date:%Y-%m-%d} will be downloaded even if the files are already present, will be overwritten')
+        report_request_ad = build_ad_performance_request_for_single_day(api_client, current_date)
+        report_request_keyword = build_keyword_performance_request_for_single_day(api_client, current_date)
+        report_request_campaign = build_campaign_performance_request_for_single_day(api_client, current_date)
 
-            with tempfile.TemporaryDirectory() as tmp_dir:
-                tmp_filepath = Path(tmp_dir, relative_filepath)
-                tmp_filepath.parent.mkdir(exist_ok=True, parents=True)
-                try:
-                    start_time = time.time()
-                    print('About to download ad data for {date:%Y-%m-%d}'
-                          .format(date=current_date))
-                    submit_and_download(report_request_ad, api_client, str(filepath), f'ad_performance_{config.output_file_version()}.csv.gz')
-                    print('Successfully downloaded ad data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
-                          .format(date=current_date, elapsed=time.time() - start_time))
-                    start_time = time.time()
-                    print('About to download keyword data for {date:%Y-%m-%d}'
-                          .format(date=current_date))
-                    submit_and_download(report_request_keyword, api_client, str(filepath),  f'keyword_performance_{config.output_file_version()}.csv.gz')
-                    print('Successfully downloaded keyword data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_filepath = Path(tmp_dir, relative_filepath)
+            tmp_filepath.parent.mkdir(exist_ok=True, parents=True)
+            try:
+                start_time = time.time()
+                print('About to download ad data for {date:%Y-%m-%d}'
+                      .format(date=current_date))
+                submit_and_download(report_request_ad, api_client, str(filepath), f'ad_performance_{config.output_file_version()}.csv.gz', overwrite_if_exists)
+                print('Successfully downloaded ad data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                       .format(date=current_date, elapsed=time.time() - start_time))
-                    print('About to download campaign data for {date:%Y-%m-%d}'
-                          .format(date=current_date))
-                    submit_and_download(report_request_campaign, api_client, str(filepath),  f'campaign_performance_{config.output_file_version()}.csv.gz')
-                    print('Successfully downloaded campaign data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
-                      .format(date=current_date, elapsed=time.time() - start_time))
-                    # date is decreased only if the download above does not fail
-                    current_date -= datetime.timedelta(days=1)
-                    remaining_attempts = config.total_attempts_for_single_day
-                except urllib.error.URLError as url_error:
-                    if remaining_attempts == 0:
-                        print('Too many failed attempts while downloading this day, quitting', file=sys.stderr)
-                        raise
-                    print('ERROR WHILE DOWNLOADING REPORT, RETRYING in {} seconds, attempt {}#...'
-                          .format(config.retry_timeout_interval, remaining_attempts), file=sys.stderr)
-                    print(url_error, file=sys.stderr)
-                    time.sleep(config.retry_timeout_interval)
-                    remaining_attempts -= 1
-        else:
-            if not filepath.is_dir():
-                print(f'Skipping the day since directory {str(filepath)} already exists')
-
-            if (last_date - current_date).days < 31:
-                print(f'Skipping the day since {str(last_date)} is more than 31 days before {str(current_date)}')
+                start_time = time.time()
+                print('About to download keyword data for {date:%Y-%m-%d}'
+                      .format(date=current_date))
+                submit_and_download(report_request_keyword, api_client, str(filepath),  f'keyword_performance_{config.output_file_version()}.csv.gz', overwrite_if_exists)
+                print('Successfully downloaded keyword data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
+                  .format(date=current_date, elapsed=time.time() - start_time))
+                print('About to download campaign data for {date:%Y-%m-%d}'
+                      .format(date=current_date))
+                submit_and_download(report_request_campaign, api_client, str(filepath),  f'campaign_performance_{config.output_file_version()}.csv.gz', overwrite_if_exists)
+                print('Successfully downloaded campaign data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
+                  .format(date=current_date, elapsed=time.time() - start_time))
+                # date is decreased only if the download above does not fail
+                current_date -= datetime.timedelta(days=1)
+                remaining_attempts = config.total_attempts_for_single_day
+            except urllib.error.URLError as url_error:
+                if remaining_attempts == 0:
+                    print('Too many failed attempts while downloading this day, quitting', file=sys.stderr)
+                    raise
+                print('ERROR WHILE DOWNLOADING REPORT, RETRYING in {} seconds, attempt {}#...'
+                      .format(config.retry_timeout_interval, remaining_attempts), file=sys.stderr)
+                print(url_error, file=sys.stderr)
+                time.sleep(config.retry_timeout_interval)
+                remaining_attempts -= 1
 
 
             current_date -= datetime.timedelta(days=1)
-
-
-
 
 
 def build_ad_performance_request_for_single_day(api_client: BingReportClient,
@@ -291,7 +284,7 @@ def build_campaign_performance_request_for_single_day(api_client: BingReportClie
     return report_request
 
 
-def submit_and_download(report_request, api_client, data_dir, data_file):
+def submit_and_download(report_request, api_client, data_dir, data_file, overwrite_if_exists):
     """
     Submit the download request and then use the ReportingDownloadOperation result to
     track status until the report is complete.
@@ -301,9 +294,10 @@ def submit_and_download(report_request, api_client, data_dir, data_file):
         api_client: BingApiClient object
         data_dir: target directory of the files containing the reports
         data_file: the name of the file containing the data
+        overwrite_if_exists: if True, overwrite the file
     """
     target_file = data_dir + '/' + data_file
-    if os.path.exists(target_file):
+    if os.path.exists(target_file) and not overwrite_if_exists:
         print(f'The file {target_file} already exists, skipping it')
         return
 
