@@ -8,21 +8,6 @@ def data_dir() -> str:
     return '/tmp/bingads/'
 
 
-def ad_performance_data_file() -> str:
-    """The name of the file the ad performance result is written to"""
-    return 'ad_performance_v2.csv.gz'
-
-
-def keyword_performance_data_file() -> str:
-    """The name of the file the keyword performance result is written to"""
-    return 'keyword_performance_v2.csv.gz'
-
-
-def campaign_performance_data_file() -> str:
-    """The name of the file the campaign performance result is written to"""
-    return 'campaign_performance_v2.csv.gz'
-
-
 def first_date() -> str:
     """The first day from which on data will be downloaded"""
     return '2015-01-01'
@@ -66,3 +51,8 @@ def total_attempts_for_single_day() -> int:
 def retry_timeout_interval() -> int:
     """number of seconds to wait before trying again to download a single day"""
     return 10
+
+
+def output_file_version() -> str:
+    """A suffix that is added to output files, denoting a version of the data format"""
+    return 'v2'

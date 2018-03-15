@@ -1,6 +1,6 @@
 # BingAds Performance Downloader
 
-A Python script for downloading performance and keyword data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://github.com/BingAds/BingAds-Python-SDK).
+A Python script for downloading performance and keyword data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://docs.microsoft.com/en-us/bingads/guides/?view=bingads-11).
 
 
 ## Resulting data
@@ -60,7 +60,7 @@ While `ad_performance` has these columns:
     AccountStatus        | Active
     CampaignStatus       | Active
     AdGroupStatus        | Active
-    AdLabels             | "(label1=value)(label2=value2)"
+    AdLabels             | {label1=value1};{label2=value2}
 
 
 And `Campaign performance` is:
@@ -154,7 +154,7 @@ For all options, see the _help_
       config.py are used.
 
     Options:
-    
+        
       --developer_token TEXT          The developer token that is used to access
                                       the BingAds API. Default: "012345679ABCDEF"
       --oauth2_client_id TEXT         The Oauth client id obtained from the
@@ -171,18 +171,9 @@ For all options, see the _help_
                                       ABCDefgh!1234567890"
       --data_dir TEXT                 The directory where result data is written
                                       to. Default: "/tmp/bingads/"
-      --ad_performance_data_file TEXT
-                                      The name of the file the ad performance
-                                      result is written to. Default:
-                                      "ad_performance.csv.gz"
-      --keyword_performance_data_file TEXT
-                                      The name of the file the keyword performance
-                                      result is written to. Default:
-                                      "keyword_performance.csv.gz"
-      --campaign_performance_data_file TEXT
-                                        The name of the file the campaign
-                                        performance result is written to. Default:
-                                        "campaign_performance.csv.gz"
+      --output_file_version TEXT      A suffix that is added to output files,
+                                      denoting a version of the data format.
+                                      Default: "v2"
       --first_date TEXT               The first day from which on data will be
                                       downloaded. Default: "2015-01-01"
       --environment TEXT              The deployment environment. Default:
@@ -198,5 +189,6 @@ For all options, see the _help_
                                       again to download a single day. Default:
                                       "10"
       --help                          Show this message and exit.
+
 
 
