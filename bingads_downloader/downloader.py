@@ -2,6 +2,7 @@ import datetime
 import errno
 import sys
 import tempfile
+import os
 import urllib
 import webbrowser
 from pathlib import Path
@@ -67,11 +68,10 @@ def download_performance_data(api_client: BingReportClient):
             date=current_date))
         filepath = ensure_data_directory(relative_filepath)
 
-        if not filepath.is_dir() or (last_date - current_date).days < 31:
+        if (last_date - current_date).days < 31:
             report_request_ad = build_ad_performance_request_for_single_day(api_client, current_date)
             report_request_keyword = build_keyword_performance_request_for_single_day(api_client, current_date)
             report_request_campaign = build_campaign_performance_request_for_single_day(api_client, current_date)
-
 
             with tempfile.TemporaryDirectory() as tmp_dir:
                 tmp_filepath = Path(tmp_dir, relative_filepath)
@@ -290,16 +290,22 @@ def build_campaign_performance_request_for_single_day(api_client: BingReportClie
     report_request.Columns = report_columns
     return report_request
 
+
 def submit_and_download(report_request, api_client, data_dir, data_file):
     """
     Submit the download request and then use the ReportingDownloadOperation result to
     track status until the report is complete.
+    Id the file already exists, do nothing
     Args:
         report_request: report_request object e.g. created by get_ad_performance_for_single_day
         api_client: BingApiClient object
         data_dir: target directory of the files containing the reports
         data_file: the name of the file containing the data
     """
+    target_file = data_dir + '/' + data_file
+    if os.path.exists(target_file):
+        print(f'The file {target_file} already exists, skipping it')
+        return
 
     current_reporting_service_manager = \
         ReportingServiceManager(
