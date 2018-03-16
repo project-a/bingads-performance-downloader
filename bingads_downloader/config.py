@@ -8,14 +8,10 @@ def data_dir() -> str:
     return '/tmp/bingads/'
 
 
-def data_file() -> str:
-    """The name of the file the result is written to"""
-    return 'ad_performance.csv.gz'
-
-
 def first_date() -> str:
     """The first day from which on data will be downloaded"""
     return '2015-01-01'
+
 
 def developer_token() -> str:
     """The developer token that is used to access the BingAds API"""
@@ -47,11 +43,16 @@ def timeout() -> int:
     return 3600000
 
 
-def total_attempts_for_single_file() -> int:
-    """The attempts to download a single file in case of HTTP errors or timeouts"""
+def total_attempts_for_single_day() -> int:
+    """The attempts to download a single day (ad and keyword performance) in case of HTTP errors or timeouts"""
     return 5
 
 
 def retry_timeout_interval() -> int:
     """number of seconds to wait before trying again to download a single day"""
     return 10
+
+
+def output_file_version() -> str:
+    """A suffix that is added to output files, denoting a version of the data format"""
+    return 'v2'
