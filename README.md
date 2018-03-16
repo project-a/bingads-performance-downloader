@@ -122,9 +122,9 @@ In order to access the BingAds API you have to obtain the OAuth2 credentials fro
     $ refresh-bingsads-api-oauth2-token \
     --developer_token ABCDEFEGHIJKL \
     --oauth2_client_id 123456789 \
-    --oauth2_client_secret aBcDeFg
 
-This will open a web browser to allow the OAuth2 credentials to access the API on your behalf.
+This will open a web browser to allow the OAuth2 credentials to access the API on your behalf.  
+
 ![](docs/oauth1.png)
 ![](docs/oauth2.png)
 
