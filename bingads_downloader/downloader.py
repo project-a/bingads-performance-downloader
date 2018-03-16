@@ -110,8 +110,6 @@ def download_performance_data(api_client: BingReportClient):
                 remaining_attempts -= 1
 
 
-            current_date -= datetime.timedelta(days=1)
-
 
 def build_ad_performance_request_for_single_day(api_client: BingReportClient,
                                                 current_date: datetime):
