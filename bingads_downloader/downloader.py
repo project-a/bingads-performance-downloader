@@ -143,18 +143,29 @@ def build_ad_performance_request_for_single_day(api_client: BingReportClient,
 
     report_columns = api_client.factory.create('ArrayOfAdPerformanceReportColumn')
     report_columns.AdPerformanceReportColumn.append([
+        "TimePeriod",
+        "DeviceType",
+
+        "AccountId",
         "AccountName",
         "AccountNumber",
-        "AccountId",
-        "TimePeriod",
-        "CampaignName",
+        "AccountStatus",
+
+
         "CampaignId",
-        "AdGroupName",
-        "AdId",
+        "CampaignName",
+        "CampaignStatus",
+
         "AdGroupId",
+        "AdGroupName",
+        "AdGroupStatus",
+
+        "AdId",
         "AdTitle",
         "AdDescription",
         "AdType",
+        "AdLabels",
+
         "Impressions",
         "Clicks",
         "Ctr",
@@ -162,12 +173,7 @@ def build_ad_performance_request_for_single_day(api_client: BingReportClient,
         "AveragePosition",
         "Conversions",
         "ConversionRate",
-        "CostPerConversion",
-        "DeviceType",
-        "AccountStatus",
-        "CampaignStatus",
-        "AdGroupStatus",
-        "AdLabels"
+        "CostPerConversion"
     ])
     report_request.Columns = report_columns
 
@@ -207,6 +213,10 @@ def build_keyword_performance_request_for_single_day(api_client: BingReportClien
     report_columns = api_client.factory.create('ArrayOfKeywordPerformanceReportColumn')
     report_columns.KeywordPerformanceReportColumn.append([
         "TimePeriod",
+        "Network",
+        "DeviceType",
+        "BidMatchType",
+
         "AccountId",
         "AccountName",
         "CampaignId",
@@ -214,10 +224,9 @@ def build_keyword_performance_request_for_single_day(api_client: BingReportClien
         "AdGroupId",
         "AdGroupName",
         "AdId",
-        "Keyword",
         "KeywordId",
-        "DeviceType",
-        "BidMatchType",
+        "Keyword",
+
         "Clicks",
         "Impressions",
         "Ctr",
@@ -226,7 +235,6 @@ def build_keyword_performance_request_for_single_day(api_client: BingReportClien
         "QualityScore",
         "Conversions",
         "Revenue",
-        "Network"
     ])
     report_request.Columns = report_columns
 
@@ -270,13 +278,15 @@ def build_campaign_performance_request_for_single_day(api_client: BingReportClie
 
     report_columns = api_client.factory.create('ArrayOfCampaignPerformanceReportColumn')
     report_columns.CampaignPerformanceReportColumn.append([
-        "AccountName",
-        "AccountId",
         "TimePeriod",
-        "CampaignName",
+
+        "AccountId",
+        "AccountName",
         "CampaignId",
-        "Spend",
-        "CampaignLabels"
+        "CampaignName",
+        "CampaignLabels",
+
+        "Spend"
     ])
     report_request.Columns = report_columns
     return report_request

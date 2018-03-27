@@ -1,7 +1,18 @@
 # Changelog
 
-## 2.0
+## 2.1.0
+2018-03-27
+
+- Improve ordering of output columns (was quite random before)
+
+**required changes** 
+
+- Adapt ETL to new column order
+
+
+## 2.0.0
 2018-03-14
+
 - Download both the keywords and the ad performance reports as two separate files (major version bump as the file name is different)
 
 ## 1.2.2
