@@ -9,7 +9,7 @@ import gzip
 import csv
 import re
 import shutil
-import itertools
+import json
 from pathlib import Path
 
 from bingads import (AuthorizationData, OAuthAuthorization, OAuthDesktopMobileAuthCodeGrant,
@@ -59,7 +59,7 @@ def download_data_sets(api_client: BingReportClient):
 
 def download_account_structure_data(api_client: BingReportClient):
     """
-    Downloads the marketing structure for each account
+    Downloads the marketing structure for all accounts
         Args:
          api_client: BingAdsApiClient
     """
@@ -69,10 +69,30 @@ def download_account_structure_data(api_client: BingReportClient):
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_filepath = Path(tmp_dir, filename)
         with gzip.open(str(tmp_filepath), 'wt') as tmp_campaign_structure_file:
-            header = ['Ad Id', 'Ad', 'Ad Group Id', 'Ad Group', 'Campaign Id',
-                      'Campaign', 'Attributes']
+            header = ['AdId', 'AdTitle', 'AdGroupId', 'AdGroupName', 'CampaignId',
+                      'CampaignName', 'AccountId', 'AccountName', 'Attributes']
             writer = csv.writer(tmp_campaign_structure_file, delimiter="\t")
             ad_data = get_ad_data(api_client)
+            campaign_attributes = get_campaign_attributes(api_client)
+            for ad_id, ad_data_dict in ad_data.items():
+                campaign_id = ad_data_dict['CampaignId']
+                ad_group_id = ad_data_dict['AdGroupId']
+                attributes = {**campaign_attributes.get(campaign_id, {}),
+                              **ad_data_dict['attributes']}
+                ad = [str(ad_id),
+                      ad_data_dict['AdTitle'],
+                      str(ad_group_id),
+                      ad_data_dict['AdGroupName'],
+                      str(campaign_id),
+                      ad_data_dict['CampaignName'],
+                      ad_data_dict['AccountId'],
+                      ad_data_dict['AccountName'],
+                      json.dumps(attributes)
+                      ]
+
+                writer.writerow(ad)
+
+        shutil.move(str(tmp_filepath), str(filepath))
 
 
 def get_ad_data(api_client: BingReportClient) -> {}:
@@ -109,27 +129,64 @@ def get_ad_data(api_client: BingReportClient) -> {}:
     report_request_ad = build_ad_performance_request_for_single_day(api_client, current_date=None, fields=fields)
 
     report_file_location = submit_and_download(report_request_ad, api_client, str('/tmp/'),
-                                               f'ad_campaign_structure_{config.output_file_version()}.csv',
+                                               f'ad_account_structure_{config.output_file_version()}.csv',
                                                overwrite_if_exists=True, decompress=True)
-    print(report_file_location)
+
     with open(report_file_location, 'r') as f:
         for i in range(11):  # skip header lines
             next(f)
         reader = csv.reader(f)
         report_data = list(reader)
 
-
-    relevant_columns=['AdId', 'AdTitle', 'AdGroupId', 'AdGroupName', 'CampaignId', 'CampaignName']
-    positions=[fields.index(name) for name in relevant_columns]
+    relevant_columns = ['AdId', 'AdTitle', 'AdGroupId', 'AdGroupName', 'CampaignId', 'CampaignName', 'AccountId',
+                        'AccountName']
+    positions = [fields.index(name) for name in relevant_columns]
 
     relevant_columns.extend(['attributes'])
     for row in report_data[:-2]:
         attributes = parse_labels(row[fields.index("AdLabels")])
-        new_row=[row[i] for i in positions]
+        new_row = [row[i] for i in positions]
         new_row.extend([attributes])
-        ad_data[row[fields.index("AdId")]] = {key:value for key, value in zip(relevant_columns,new_row)}
+        ad_data[row[fields.index("AdId")]] = {key: value for key, value in zip(relevant_columns, new_row)}
 
     return ad_data
+
+
+def get_campaign_attributes(api_client: BingReportClient) -> {}:
+    """Downloads the campaign attributes from the Bing AdWords API
+    Args:
+        api_client: BingAdsApiClient
+    Returns:
+        A dictionary of the form {campaign_id: {key: value}}
+    """
+    campaign_labels = {}
+    fields = ["TimePeriod",
+
+              "AccountId",
+              "AccountName",
+              "CampaignId",
+              "CampaignName",
+              "CampaignLabels",
+
+              "Spend"]  # fails without adding spend
+    report_request_campaign = build_campaign_performance_request_for_single_day(api_client, current_date=None,
+                                                                                fields=fields)
+
+    report_file_location = submit_and_download(report_request_campaign, api_client, str('/tmp/'),
+                                               f'campaign_labels_{config.output_file_version()}.csv',
+                                               overwrite_if_exists=True, decompress=True)
+
+    with open(report_file_location, 'r') as f:
+        for i in range(11):  # skip header lines
+            next(f)
+        reader = csv.reader(f)
+        report_data = list(reader)
+
+    for row in report_data[:-2]:
+        attributes = parse_labels(row[fields.index("CampaignLabels")])
+        campaign_labels[row[fields.index("CampaignId")]] = attributes
+
+    return campaign_labels
 
 
 def download_performance_data(api_client: BingReportClient):
