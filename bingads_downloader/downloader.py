@@ -72,8 +72,9 @@ def download_account_structure_data(api_client: BingReportClient):
             header = ['AdId', 'AdTitle', 'AdGroupId', 'AdGroupName', 'CampaignId',
                       'CampaignName', 'AccountId', 'AccountName', 'Attributes']
             writer = csv.writer(tmp_campaign_structure_file, delimiter="\t")
-            ad_data = get_ad_data(api_client)
-            campaign_attributes = get_campaign_attributes(api_client)
+            ad_data = get_ad_data(api_client,tmp_dir)
+            campaign_attributes = get_campaign_attributes(api_client,tmp_dir)
+            writer.writerow(header)
             for ad_id, ad_data_dict in ad_data.items():
                 campaign_id = ad_data_dict['CampaignId']
                 ad_group_id = ad_data_dict['AdGroupId']
@@ -95,10 +96,11 @@ def download_account_structure_data(api_client: BingReportClient):
         shutil.move(str(tmp_filepath), str(filepath))
 
 
-def get_ad_data(api_client: BingReportClient) -> {}:
+def get_ad_data(api_client: BingReportClient, tmp_dir: Path) -> {}:
     """Downloads the ad data from the Bing AdWords API
     Args:
         api_client: BingAdsApiClient
+        tmp_dir: path to write the temp file in
     Returns:
         A dictionary of the form {ad_id: {key: value}}
     """
@@ -128,7 +130,7 @@ def get_ad_data(api_client: BingReportClient) -> {}:
               "Impressions"]  # need to include impressions, otherwise API call fails??
     report_request_ad = build_ad_performance_request_for_single_day(api_client, current_date=None, fields=fields)
 
-    report_file_location = submit_and_download(report_request_ad, api_client, str('/tmp/'),
+    report_file_location = submit_and_download(report_request_ad, api_client, str(tmp_dir),
                                                f'ad_account_structure_{config.output_file_version()}.csv',
                                                overwrite_if_exists=True, decompress=True)
 
@@ -152,10 +154,11 @@ def get_ad_data(api_client: BingReportClient) -> {}:
     return ad_data
 
 
-def get_campaign_attributes(api_client: BingReportClient) -> {}:
+def get_campaign_attributes(api_client: BingReportClient,tmp_dir: Path) -> {}:
     """Downloads the campaign attributes from the Bing AdWords API
     Args:
         api_client: BingAdsApiClient
+        tmp_dir: path to write the temp file in
     Returns:
         A dictionary of the form {campaign_id: {key: value}}
     """
@@ -172,7 +175,7 @@ def get_campaign_attributes(api_client: BingReportClient) -> {}:
     report_request_campaign = build_campaign_performance_request_for_single_day(api_client, current_date=None,
                                                                                 fields=fields)
 
-    report_file_location = submit_and_download(report_request_campaign, api_client, str('/tmp/'),
+    report_file_location = submit_and_download(report_request_campaign, api_client, str(tmp_dir),
                                                f'campaign_labels_{config.output_file_version()}.csv',
                                                overwrite_if_exists=True, decompress=True)
 

@@ -1,6 +1,6 @@
 # BingAds Performance Downloader
 
-A Python script for downloading performance and keyword data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://docs.microsoft.com/en-us/bingads/guides/?view=bingads-11).
+A Python script for downloading performance and keyword data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://github.com/BingAds/BingAds-Python-SDK).
 
 
 ## Resulting data
@@ -72,6 +72,23 @@ And `Campaign performance` is:
     CampaignId           | 1234567
     Spend                | 1.23
     CampaignLabel        | {channel=display}
+
+Additionally one account structure file is generated for example:
+
+    /tmp/bing/bing-account-structure.csv.gz
+
+which contains `Account Structure` as:
+
+    AdId                | 101123456
+    AdTitle             | your_ad_name
+    AdGroupId           | 123456789011
+    AdGroupName         | your_ad_group_name
+    CampaignId          | 1234567
+    CampaignName        | your_campaign_name
+    AccountId           | 12345678
+    AccountName         | your_company_us
+    Attributes          | {channel=display}
+
 
 ## Getting Started
 
