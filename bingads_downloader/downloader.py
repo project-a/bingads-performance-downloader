@@ -72,8 +72,8 @@ def download_account_structure_data(api_client: BingReportClient):
             header = ['AdId', 'AdTitle', 'AdGroupId', 'AdGroupName', 'CampaignId',
                       'CampaignName', 'AccountId', 'AccountName', 'Attributes']
             writer = csv.writer(tmp_campaign_structure_file, delimiter="\t")
-            ad_data = get_ad_data(api_client,tmp_dir)
-            campaign_attributes = get_campaign_attributes(api_client,tmp_dir)
+            ad_data = get_ad_data(api_client, tmp_dir)
+            campaign_attributes = get_campaign_attributes(api_client, tmp_dir)
             writer.writerow(header)
             for ad_id, ad_data_dict in ad_data.items():
                 campaign_id = ad_data_dict['CampaignId']
@@ -128,7 +128,7 @@ def get_ad_data(api_client: BingReportClient, tmp_dir: Path) -> {}:
               "AdLabels",
 
               "Impressions"]  # need to include impressions, otherwise API call fails??
-    report_request_ad = build_ad_performance_request_for_single_day(api_client, current_date=None, fields=fields)
+    report_request_ad = build_ad_performance_request(api_client, current_date=None, fields=fields,all_time=True)
 
     report_file_location = submit_and_download(report_request_ad, api_client, str(tmp_dir),
                                                f'ad_account_structure_{config.output_file_version()}.csv',
@@ -154,7 +154,7 @@ def get_ad_data(api_client: BingReportClient, tmp_dir: Path) -> {}:
     return ad_data
 
 
-def get_campaign_attributes(api_client: BingReportClient,tmp_dir: Path) -> {}:
+def get_campaign_attributes(api_client: BingReportClient, tmp_dir: Path) -> {}:
     """Downloads the campaign attributes from the Bing AdWords API
     Args:
         api_client: BingAdsApiClient
@@ -172,8 +172,8 @@ def get_campaign_attributes(api_client: BingReportClient,tmp_dir: Path) -> {}:
               "CampaignLabels",
 
               "Spend"]  # fails without adding spend
-    report_request_campaign = build_campaign_performance_request_for_single_day(api_client, current_date=None,
-                                                                                fields=fields)
+    report_request_campaign = build_campaign_performance_request(api_client, current_date=None,
+                                                                 fields=fields, all_time=True)
 
     report_file_location = submit_and_download(report_request_campaign, api_client, str(tmp_dir),
                                                f'campaign_labels_{config.output_file_version()}.csv',
@@ -212,9 +212,9 @@ def download_performance_data(api_client: BingReportClient):
         overwrite_if_exists = (last_date - current_date).days < 31
         if overwrite_if_exists:
             print(f'The data for {current_date:%Y-%m-%d} will be downloaded. Already present files will be overwritten')
-        report_request_ad = build_ad_performance_request_for_single_day(api_client, current_date)
-        report_request_keyword = build_keyword_performance_request_for_single_day(api_client, current_date)
-        report_request_campaign = build_campaign_performance_request_for_single_day(api_client, current_date)
+        report_request_ad = build_ad_performance_request(api_client, current_date)
+        report_request_keyword = build_keyword_performance_request(api_client, current_date)
+        report_request_campaign = build_campaign_performance_request(api_client, current_date)
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_filepath = Path(tmp_dir, relative_filepath)
@@ -255,44 +255,51 @@ def download_performance_data(api_client: BingReportClient):
 
 
 def set_report_time(api_client: BingReportClient,
-                    current_date: datetime = None):
+                    current_date: datetime = None, all_time: bool = False):
     """
     Sets the report time for the BingAds API Client
     Args:
         api_client: BingApiClient object
         current_date: date for which the report object will be created
-
+        all_time: include all days from the import start date
     Returns:
         A report time object with a specific date
     """
 
     report_time = api_client.factory.create('ReportTime')
 
-    custom_date_range_start = api_client.factory.create('Date')
+    custom_date_range_end = api_client.factory.create('Date')
 
     if current_date is None:
         current_date = datetime.datetime.now()  # for example for downloading current campaign structure
-    custom_date_range_start.Day = current_date.day
-    custom_date_range_start.Month = current_date.month
-    custom_date_range_start.Year = current_date.year
+    custom_date_range_end.Day = current_date.day
+    custom_date_range_end.Month = current_date.month
+    custom_date_range_end.Year = current_date.year
 
-    report_time.CustomDateRangeStart = custom_date_range_start
-    report_time.CustomDateRangeEnd = custom_date_range_start
+    report_time.CustomDateRangeEnd = custom_date_range_end
+    if not all_time :
+        report_time.CustomDateRangeStart = custom_date_range_end
+    else:
+        first_date = datetime.datetime.strptime(config.first_date(), '%Y-%m-%d')
+        custom_date_range_end = api_client.factory.create('Date')
+        custom_date_range_end.Day = first_date.day
+        custom_date_range_end.Month = first_date.month
+        custom_date_range_end.Year = first_date.year
     report_time.PredefinedTime = None
 
     return report_time
 
 
-def build_ad_performance_request_for_single_day(api_client: BingReportClient,
-                                                current_date: datetime = None,
-                                                fields: [str] = None):
+def build_ad_performance_request(api_client: BingReportClient,
+                                 current_date: datetime = None,
+                                 fields: [str] = None, all_time=False):
     """
     Creates an Ad report request object with hard coded parameters for a give date.
     Args:
         api_client: BingApiClient object
         current_date: date for which the report object will be created
         fields: a list of columns to download from AdPerformanceReport
-
+        all_time: include all days from the import start date
     Returns:
         A report request object with our specific hard coded settings for a given date
     """
@@ -302,7 +309,7 @@ def build_ad_performance_request_for_single_day(api_client: BingReportClient,
     report_request.ReturnOnlyCompleteData = False
     report_request.Aggregation = 'Daily'
     report_request.Language = 'English'
-    report_request.Time = set_report_time(api_client, current_date)
+    report_request.Time = set_report_time(api_client, current_date, all_time)
 
     report_columns = api_client.factory.create('ArrayOfAdPerformanceReportColumn')
     if fields is None:
@@ -345,16 +352,16 @@ def build_ad_performance_request_for_single_day(api_client: BingReportClient,
     return report_request
 
 
-def build_keyword_performance_request_for_single_day(api_client: BingReportClient,
-                                                     current_date: datetime = None,
-                                                     fields: [str] = None):
+def build_keyword_performance_request(api_client: BingReportClient,
+                                      current_date: datetime = None,
+                                      fields: [str] = None, all_time=False):
     """
     Creates a Keyword report request object with hard coded parameters for a give date.
     Args:
         api_client: BingApiClient object
         current_date: date for which the report object will be created
         fields: a list of columns to download from AdPerformanceReport
-
+        all_time: include all days from the import start date
     Returns:
         A report request object with our specific hard coded settings for a given date
     """
@@ -365,7 +372,7 @@ def build_keyword_performance_request_for_single_day(api_client: BingReportClien
     report_request.Aggregation = 'Daily'
     report_request.Language = 'English'
 
-    report_request.Time = set_report_time(api_client, current_date)
+    report_request.Time = set_report_time(api_client, current_date,all_time)
 
     report_columns = api_client.factory.create('ArrayOfKeywordPerformanceReportColumn')
     if fields is None:
@@ -408,9 +415,9 @@ def build_keyword_performance_request_for_single_day(api_client: BingReportClien
     return report_request
 
 
-def build_campaign_performance_request_for_single_day(api_client: BingReportClient,
-                                                      current_date: datetime = None,
-                                                      fields: [str] = None):
+def build_campaign_performance_request(api_client: BingReportClient,
+                                       current_date: datetime = None,
+                                       fields: [str] = None, all_time=False):
     """
     Creates a Campaign report request object with hard coded parameters for a give date.
     Args:
@@ -427,7 +434,7 @@ def build_campaign_performance_request_for_single_day(api_client: BingReportClie
     report_request.ReturnOnlyCompleteData = False
     report_request.Language = 'English'
     report_request.Aggregation = 'Daily'
-    report_request.Time = set_report_time(api_client, current_date)
+    report_request.Time = set_report_time(api_client, current_date, all_time)
 
     report_columns = api_client.factory.create('ArrayOfCampaignPerformanceReportColumn')
     if fields is None:
@@ -467,7 +474,7 @@ def submit_and_download(report_request, api_client, data_dir, data_file, overwri
     track status until the report is complete.
     Id the file already exists, do nothing
     Args:
-        report_request: report_request object e.g. created by get_ad_performance_for_single_day
+        report_request: report_request object e.g. created by get_ad_performance
         api_client: BingApiClient object
         data_dir: target directory of the files containing the reports
         data_file: the name of the file containing the data
