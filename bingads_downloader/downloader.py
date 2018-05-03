@@ -63,9 +63,10 @@ def download_account_structure_data(api_client: BingReportClient):
         Args:
          api_client: BingAdsApiClient
     """
+
     filename = Path('bing-account-structure_{}.csv.gz'.format(config.output_file_version()))
     filepath = ensure_data_directory(filename)
-
+    print(f'Start downloading account structure in {str(filename)}')
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_filepath = Path(tmp_dir, filename)
         with gzip.open(str(tmp_filepath), 'wt') as tmp_campaign_structure_file:
@@ -281,10 +282,11 @@ def set_report_time(api_client: BingReportClient,
         report_time.CustomDateRangeStart = custom_date_range_end
     else:
         first_date = datetime.datetime.strptime(config.first_date(), '%Y-%m-%d')
-        custom_date_range_end = api_client.factory.create('Date')
-        custom_date_range_end.Day = first_date.day
-        custom_date_range_end.Month = first_date.month
-        custom_date_range_end.Year = first_date.year
+        custom_date_range_start = api_client.factory.create('Date')
+        custom_date_range_start.Day = first_date.day
+        custom_date_range_start.Month = first_date.month
+        custom_date_range_start.Year = first_date.year
+        report_time.CustomDateRangeStart = custom_date_range_start
     report_time.PredefinedTime = None
 
     return report_time
@@ -307,7 +309,10 @@ def build_ad_performance_request(api_client: BingReportClient,
     report_request.Format = 'Csv'
     report_request.ReportName = 'My Ad Performance Report'
     report_request.ReturnOnlyCompleteData = False
-    report_request.Aggregation = 'Daily'
+    if all_time:
+        report_request.Aggregation = 'Yearly'
+    else:
+        report_request.Aggregation = 'Daily'
     report_request.Language = 'English'
     report_request.Time = set_report_time(api_client, current_date, all_time)
 
@@ -369,7 +374,10 @@ def build_keyword_performance_request(api_client: BingReportClient,
     report_request.Format = 'Csv'
     report_request.ReportName = 'My Keyword Performance Report'
     report_request.ReturnOnlyCompleteData = False
-    report_request.Aggregation = 'Daily'
+    if all_time:
+        report_request.Aggregation = 'Yearly'
+    else:
+        report_request.Aggregation = 'Daily'
     report_request.Language = 'English'
 
     report_request.Time = set_report_time(api_client, current_date,all_time)
@@ -433,7 +441,10 @@ def build_campaign_performance_request(api_client: BingReportClient,
     report_request.ReportName = 'My Campaign Performance Report'
     report_request.ReturnOnlyCompleteData = False
     report_request.Language = 'English'
-    report_request.Aggregation = 'Daily'
+    if all_time:
+        report_request.Aggregation = 'Yearly'
+    else:
+        report_request.Aggregation = 'Daily'
     report_request.Time = set_report_time(api_client, current_date, all_time)
 
     report_columns = api_client.factory.create('ArrayOfCampaignPerformanceReportColumn')
