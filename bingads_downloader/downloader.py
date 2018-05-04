@@ -66,7 +66,7 @@ def download_account_structure_data(api_client: BingReportClient):
 
     filename = Path('bing-account-structure_{}.csv.gz'.format(config.output_file_version()))
     filepath = ensure_data_directory(filename)
-    print(f'Start downloading account structure in {str(filename)}')
+    print('Start downloading account structure in {}'.format(str(filename)))
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_filepath = Path(tmp_dir, filename)
         with gzip.open(str(tmp_filepath), 'wt') as tmp_campaign_structure_file:
@@ -132,7 +132,7 @@ def get_ad_data(api_client: BingReportClient, tmp_dir: Path) -> {}:
     report_request_ad = build_ad_performance_request(api_client, current_date=None, fields=fields,all_time=True)
 
     report_file_location = submit_and_download(report_request_ad, api_client, str(tmp_dir),
-                                               f'ad_account_structure_{config.output_file_version()}.csv',
+                                               'ad_account_structure_{}.csv'.format(config.output_file_version()),
                                                overwrite_if_exists=True, decompress=True)
 
     with open(report_file_location, 'r') as f:
@@ -177,7 +177,7 @@ def get_campaign_attributes(api_client: BingReportClient, tmp_dir: Path) -> {}:
                                                                  fields=fields, all_time=True)
 
     report_file_location = submit_and_download(report_request_campaign, api_client, str(tmp_dir),
-                                               f'campaign_labels_{config.output_file_version()}.csv',
+                                               'campaign_labels_{}.csv'.format(config.output_file_version()),
                                                overwrite_if_exists=True, decompress=True)
 
     with open(report_file_location, 'r') as f:
@@ -212,7 +212,7 @@ def download_performance_data(api_client: BingReportClient):
 
         overwrite_if_exists = (last_date - current_date).days < 31
         if overwrite_if_exists:
-            print(f'The data for {current_date:%Y-%m-%d} will be downloaded. Already present files will be overwritten')
+            print('The data for {date:%Y-%m-%d} will be downloaded. Already present files will be overwritten'.format(date=current_date))
         report_request_ad = build_ad_performance_request(api_client, current_date)
         report_request_keyword = build_keyword_performance_request(api_client, current_date)
         report_request_campaign = build_campaign_performance_request(api_client, current_date)
@@ -225,20 +225,20 @@ def download_performance_data(api_client: BingReportClient):
                 print('About to download ad data for {date:%Y-%m-%d}'
                       .format(date=current_date))
                 submit_and_download(report_request_ad, api_client, str(filepath),
-                                    f'ad_performance_{config.output_file_version()}.csv.gz', overwrite_if_exists)
+                                    'ad_performance_{}.csv.gz'.format(config.output_file_version()), overwrite_if_exists)
                 print('Successfully downloaded ad data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                       .format(date=current_date, elapsed=time.time() - start_time))
                 start_time = time.time()
                 print('About to download keyword data for {date:%Y-%m-%d}'
                       .format(date=current_date))
                 submit_and_download(report_request_keyword, api_client, str(filepath),
-                                    f'keyword_performance_{config.output_file_version()}.csv.gz', overwrite_if_exists)
+                                    'keyword_performance_{}.csv.gz'.format(config.output_file_version()), overwrite_if_exists)
                 print('Successfully downloaded keyword data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                       .format(date=current_date, elapsed=time.time() - start_time))
                 print('About to download campaign data for {date:%Y-%m-%d}'
                       .format(date=current_date))
                 submit_and_download(report_request_campaign, api_client, str(filepath),
-                                    f'campaign_performance_{config.output_file_version()}.csv.gz', overwrite_if_exists)
+                                    'campaign_performance_{}.csv.gz'.format(config.output_file_version()), overwrite_if_exists)
                 print('Successfully downloaded campaign data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                       .format(date=current_date, elapsed=time.time() - start_time))
                 # date is decreased only if the download above does not fail
@@ -496,7 +496,7 @@ def submit_and_download(report_request, api_client, data_dir, data_file, overwri
     """
     target_file = data_dir + '/' + data_file
     if os.path.exists(target_file) and not overwrite_if_exists:
-        print(f'The file {target_file} already exists, skipping it')
+        print('The file {} already exists, skipping it'.format(target_file))
         return
 
     current_reporting_service_manager = \
