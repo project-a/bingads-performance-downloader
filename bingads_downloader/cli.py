@@ -3,8 +3,9 @@
 import sys
 
 import click
-from bingads_downloader import downloader,config
 from functools import partial
+
+from bingads_downloader import config
 
 
 def config_option(config_function):
@@ -42,6 +43,8 @@ def refresh_oauth2_token(**kwargs):
     """
     apply_options(kwargs)
     show_version()
+
+    from bingads_downloader import downloader # load api client only when needed
     downloader.refresh_oauth_token()
 
 
@@ -64,4 +67,6 @@ def download_data(**kwargs):
     """
     apply_options(kwargs)
     show_version()
+
+    from bingads_downloader import downloader # load api client only when needed
     downloader.download_data()
