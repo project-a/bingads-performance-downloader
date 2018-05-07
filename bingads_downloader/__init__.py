@@ -1,4 +1,4 @@
-from bingads_downloader import cli,config
+from bingads_downloader import cli, config
 
 MARA_CONFIG_MODULES = [config]
 

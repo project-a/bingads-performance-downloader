@@ -1,9 +1,9 @@
 """Command line interface for Bing downloader"""
 
 import sys
+from functools import partial
 
 import click
-from functools import partial
 
 from bingads_downloader import config
 

@@ -1,21 +1,21 @@
+import csv
 import datetime
 import errno
-import sys
-import tempfile
-import os
-import urllib
-import webbrowser
 import gzip
-import csv
+import json
+import os
 import re
 import shutil
-import json
+import sys
+import tempfile
+import urllib
+import webbrowser
 from pathlib import Path
 
 from bingads import (AuthorizationData, OAuthAuthorization, OAuthDesktopMobileAuthCodeGrant,
                      OAuthTokenRequestException)
-from bingads.v11.reporting.reporting_service_manager import ReportingServiceManager, time
 from bingads.service_client import ServiceClient
+from bingads.v11.reporting.reporting_service_manager import ReportingServiceManager, time
 
 from bingads_downloader import config
 
@@ -129,7 +129,7 @@ def get_ad_data(api_client: BingReportClient, tmp_dir: Path) -> {}:
               "AdLabels",
 
               "Impressions"]  # need to include impressions, otherwise API call fails??
-    report_request_ad = build_ad_performance_request(api_client, current_date=None, fields=fields,all_time=True)
+    report_request_ad = build_ad_performance_request(api_client, current_date=None, fields=fields, all_time=True)
 
     report_file_location = submit_and_download(report_request_ad, api_client, str(tmp_dir),
                                                'ad_account_structure_{}.csv'.format(config.output_file_version()),
@@ -212,7 +212,8 @@ def download_performance_data(api_client: BingReportClient):
 
         overwrite_if_exists = (last_date - current_date).days < 31
         if overwrite_if_exists:
-            print('The data for {date:%Y-%m-%d} will be downloaded. Already present files will be overwritten'.format(date=current_date))
+            print('The data for {date:%Y-%m-%d} will be downloaded. Already present files will be overwritten'.format(
+                date=current_date))
         report_request_ad = build_ad_performance_request(api_client, current_date)
         report_request_keyword = build_keyword_performance_request(api_client, current_date)
         report_request_campaign = build_campaign_performance_request(api_client, current_date)
@@ -225,20 +226,23 @@ def download_performance_data(api_client: BingReportClient):
                 print('About to download ad data for {date:%Y-%m-%d}'
                       .format(date=current_date))
                 submit_and_download(report_request_ad, api_client, str(filepath),
-                                    'ad_performance_{}.csv.gz'.format(config.output_file_version()), overwrite_if_exists)
+                                    'ad_performance_{}.csv.gz'.format(config.output_file_version()),
+                                    overwrite_if_exists)
                 print('Successfully downloaded ad data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                       .format(date=current_date, elapsed=time.time() - start_time))
                 start_time = time.time()
                 print('About to download keyword data for {date:%Y-%m-%d}'
                       .format(date=current_date))
                 submit_and_download(report_request_keyword, api_client, str(filepath),
-                                    'keyword_performance_{}.csv.gz'.format(config.output_file_version()), overwrite_if_exists)
+                                    'keyword_performance_{}.csv.gz'.format(config.output_file_version()),
+                                    overwrite_if_exists)
                 print('Successfully downloaded keyword data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                       .format(date=current_date, elapsed=time.time() - start_time))
                 print('About to download campaign data for {date:%Y-%m-%d}'
                       .format(date=current_date))
                 submit_and_download(report_request_campaign, api_client, str(filepath),
-                                    'campaign_performance_{}.csv.gz'.format(config.output_file_version()), overwrite_if_exists)
+                                    'campaign_performance_{}.csv.gz'.format(config.output_file_version()),
+                                    overwrite_if_exists)
                 print('Successfully downloaded campaign data for {date:%Y-%m-%d} in {elapsed:.1f} seconds'
                       .format(date=current_date, elapsed=time.time() - start_time))
                 # date is decreased only if the download above does not fail
@@ -278,7 +282,7 @@ def set_report_time(api_client: BingReportClient,
     custom_date_range_end.Year = current_date.year
 
     report_time.CustomDateRangeEnd = custom_date_range_end
-    if not all_time :
+    if not all_time:
         report_time.CustomDateRangeStart = custom_date_range_end
     else:
         first_date = datetime.datetime.strptime(config.first_date(), '%Y-%m-%d')
@@ -380,7 +384,7 @@ def build_keyword_performance_request(api_client: BingReportClient,
         report_request.Aggregation = 'Daily'
     report_request.Language = 'English'
 
-    report_request.Time = set_report_time(api_client, current_date,all_time)
+    report_request.Time = set_report_time(api_client, current_date, all_time)
 
     report_columns = api_client.factory.create('ArrayOfKeywordPerformanceReportColumn')
     if fields is None:
@@ -623,7 +627,3 @@ def ensure_data_directory(relative_path: Path = None) -> Path:
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
-
-
-if __name__ == "__main__":
-    download_data()
