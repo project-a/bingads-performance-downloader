@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='bingads-performance-downloader',
 
-    version='2.1.0',
+    version='2.2.0',
 
     description="Downloads data from the BingAds Api to local files for usage in a data warehouse",
 

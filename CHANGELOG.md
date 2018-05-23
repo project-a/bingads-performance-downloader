@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.2.0 (2018-05-23)
+
+- Download campaign structure including labels on all levels as separate file
+
+**required changes** 
+
+- Adapt ETL
+
+
 ## 2.1.0 (2018-03-27)
 
 - Improve ordering of output columns (was quite random before)
