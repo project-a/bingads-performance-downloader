@@ -587,6 +587,7 @@ def refresh_oauth_token():
     api_client = BingReportClient()
     authentication = OAuthDesktopMobileAuthCodeGrant(client_id=config.oauth2_client_id())
     api_client.authorization_data.authentication = authentication
+    print('Authorization Endpoint: {}'.format(api_client.authorization_data.authentication.get_authorization_endpoint()))
     webbrowser.open(api_client.authorization_data.authentication.get_authorization_endpoint(),
                     new=1)
     response_uri = input(
