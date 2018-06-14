@@ -1,8 +1,10 @@
 # Changelog
 
-## 2.2.0 (2018-05-23)
+## 2.2.0 - 2.2.1 (2018-05-23)
 
 - Download campaign structure including labels on all levels as separate file
+- Print Authorization Endpoint
+
 
 **required changes** 
 
