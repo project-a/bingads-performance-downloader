@@ -2,6 +2,8 @@
 
 A Python script for downloading performance and keyword data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://github.com/BingAds/BingAds-Python-SDK).
 
+The [mara Bing ads performance pipeline](https://github.com/mara/bing-ads-performance-pipeline) can be, then, used for loading and transforming the downloaded data into a dimensional schema.
+
 ## Resulting data
 
 **BingAds Performance Downloader** gives measures such as impressions, clicks and cost. The script creates three csv files per day in a specified time range, for example:
