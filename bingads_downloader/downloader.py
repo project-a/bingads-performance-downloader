@@ -11,11 +11,12 @@ import tempfile
 import urllib
 import webbrowser
 from pathlib import Path
+from suds import WebFault
 
 from bingads import (AuthorizationData, OAuthAuthorization, OAuthDesktopMobileAuthCodeGrant,
                      OAuthTokenRequestException)
 from bingads.service_client import ServiceClient
-from bingads.v11.reporting.reporting_service_manager import ReportingServiceManager, time
+from bingads.v12.reporting.reporting_service_manager import ReportingServiceManager, time
 
 from bingads_downloader import config
 
@@ -34,15 +35,19 @@ class BingReportClient(ServiceClient):
 
         self.client = super(BingReportClient, self).__init__(service='ReportingService',
                                                              authorization_data=authorization_data,
-                                                             environment='production', version='v11')
+                                                             environment='production', version='v12')
 
 
 def download_data():
     """
     Creates an BingApiClient and downloads the data
     """
-    api_client = BingReportClient()
-    download_data_sets(api_client)
+    try:
+        api_client = BingReportClient()
+        download_data_sets(api_client)
+    except WebFault as e:
+        print(e.fault)
+        raise
 
 
 def download_data_sets(api_client: BingReportClient):
@@ -292,6 +297,7 @@ def set_report_time(api_client: BingReportClient,
         custom_date_range_start.Year = first_date.year
         report_time.CustomDateRangeStart = custom_date_range_start
     report_time.PredefinedTime = None
+    report_time.ReportTimeZone = None
 
     return report_time
 
