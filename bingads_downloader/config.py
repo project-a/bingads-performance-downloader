@@ -55,4 +55,4 @@ def retry_timeout_interval() -> int:
 
 def output_file_version() -> str:
     """A suffix that is added to output files, denoting a version of the data format"""
-    return 'v3'
+    return 'v4'

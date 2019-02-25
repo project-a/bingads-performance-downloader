@@ -1,6 +1,6 @@
 # BingAds Performance Downloader
 
-A Python script for downloading performance and keyword data from the [BingAds API version 11](https://msdn.microsoft.com/en-us/library/bing-ads-overview(v=msads.100).aspx) to local files. The code is largely based on [Bing Ads Python SDK](https://github.com/BingAds/BingAds-Python-SDK).
+A Python script for downloading performance and keyword data from the [BingAds API version 12](https://docs.microsoft.com/en-us/bingads/guides/?view=bingads-12) to local files. The code is largely based on [Bing Ads Python SDK](https://github.com/BingAds/BingAds-Python-SDK).
 
 The [mara Bing ads performance pipeline](https://github.com/mara/bing-ads-performance-pipeline) can be, then, used for loading and transforming the downloaded data into a dimensional schema.
 
@@ -14,7 +14,7 @@ The [mara Bing ads performance pipeline](https://github.com/mara/bing-ads-perfor
 
  Each line of `keyword_performance` contains one ad for one day:
 
-    GregorianDate        | 2/12/2016
+    TimePeriod           | 2/12/2016
     AccountId            | 17837800573
     AccountName          | Online Veiling Gent
     CampaignId           | 254776453

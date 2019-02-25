@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.0 (2019-02-25)
+
+- Use BingAds API v12
+
+**required changes** 
+
+- Adapt ETL (read_csv.py) to new output column naming (GregorianDate renamed to TimePeriod)
+
 ## 2.2.0 - 2.2.1 (2018-05-23)
 
 - Download campaign structure including labels on all levels as separate file
