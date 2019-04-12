@@ -11,12 +11,12 @@ import tempfile
 import urllib
 import webbrowser
 from pathlib import Path
-from suds import WebFault
 
 from bingads import (AuthorizationData, OAuthAuthorization, OAuthDesktopMobileAuthCodeGrant,
                      OAuthTokenRequestException)
 from bingads.service_client import ServiceClient
 from bingads.v12.reporting.reporting_service_manager import ReportingServiceManager, time
+from suds import WebFault
 
 from bingads_downloader import config
 
@@ -593,7 +593,8 @@ def refresh_oauth_token():
     api_client = BingReportClient()
     authentication = OAuthDesktopMobileAuthCodeGrant(client_id=config.oauth2_client_id())
     api_client.authorization_data.authentication = authentication
-    print('Authorization Endpoint: {}'.format(api_client.authorization_data.authentication.get_authorization_endpoint()))
+    print(
+        'Authorization Endpoint: {}'.format(api_client.authorization_data.authentication.get_authorization_endpoint()))
     webbrowser.open(api_client.authorization_data.authentication.get_authorization_endpoint(),
                     new=1)
     response_uri = input(
