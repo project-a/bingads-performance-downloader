@@ -39,11 +39,11 @@ def oauth2_refresh_token() -> str:
 
 def oauth2_customer_id() -> str:
     """The customer ID for the person"""
-    return 438958943
+    return "438958943"
 
 def oauth2_account_id() -> str:
     """The customer ID for the person"""
-    return 438958943
+    return "438958943"
 
 def timeout() -> int:
     """The maximum amount of time (in milliseconds) that you want to wait for the report download"""
