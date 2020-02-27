@@ -391,6 +391,11 @@ def build_keyword_performance_request(api_client: BingReportClient,
     report_request.Format = 'Csv'
     report_request.ReportName = 'My Keyword Performance Report'
     report_request.ReturnOnlyCompleteData = False
+    scope = api_client.factory.create('AccountThroughCampaignReportScope')
+    scope.AccountIds={'long': config.oauth2_account_array()}
+    scope.Campaigns=None
+    report_request.Scope=scope
+
     if all_time:
         report_request.Aggregation = 'Yearly'
     else:
@@ -457,6 +462,10 @@ def build_campaign_performance_request(api_client: BingReportClient,
     report_request.Format = 'Csv'
     report_request.ReportName = 'My Campaign Performance Report'
     report_request.ReturnOnlyCompleteData = False
+    scope = api_client.factory.create('AccountThroughCampaignReportScope')
+    scope.AccountIds={'long': config.oauth2_account_array()}
+    scope.Campaigns=None
+    report_request.Scope=scope
     #report_request.Language = 'English'
     if all_time:
         report_request.Aggregation = 'Yearly'
