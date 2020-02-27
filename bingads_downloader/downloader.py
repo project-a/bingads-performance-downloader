@@ -323,7 +323,7 @@ def build_ad_performance_request(api_client: BingReportClient,
     report_request.ReportName = 'My Ad Performance Report'
     report_request.ReturnOnlyCompleteData = False
     scope = api_client.factory.create('AccountThroughCampaignReportScope')
-    scope.AccountIds={'long': '' }
+    scope.AccountIds={'long': config.oauth2_account_array()}
     scope.Campaigns=None
     report_request.Scope=scope
     if all_time:

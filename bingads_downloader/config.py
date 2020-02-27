@@ -45,6 +45,10 @@ def oauth2_account_id() -> str:
     """The customer ID for the person"""
     return "438958943"
 
+def oauth2_account_array():
+    """ Returns the list of accounts as an array"""
+    return ['435435435','435435435']
+    
 def timeout() -> int:
     """The maximum amount of time (in milliseconds) that you want to wait for the report download"""
     return 3600000
