@@ -15,7 +15,7 @@ from pathlib import Path
 from bingads import (AuthorizationData, OAuthAuthorization, OAuthDesktopMobileAuthCodeGrant,
                      OAuthTokenRequestException)
 from bingads.service_client import ServiceClient
-from bingads.v12.reporting.reporting_service_manager import ReportingServiceManager, time
+from bingads.v13.reporting.reporting_service_manager import ReportingServiceManager, time
 from suds import WebFault
 
 from bingads_downloader import config
@@ -29,13 +29,16 @@ class BingReportClient(ServiceClient):
     def __init__(self):
         authorization_data = AuthorizationData(
             developer_token=config.developer_token(),
+            customer_id=config.oauth2_customer_id(),
+            account_id=config.oauth2_account_id(),
             authentication=OAuthAuthorization(client_id=config.oauth2_client_id(),
-                                              oauth_tokens=config.developer_token()),
+                                              oauth_tokens=config.developer_token()
+                                             ),
         )
 
         self.client = super(BingReportClient, self).__init__(service='ReportingService',
                                                              authorization_data=authorization_data,
-                                                             environment='production', version='v12')
+                                                             environment='production', version='v13')
 
 
 def download_data():
@@ -319,11 +322,15 @@ def build_ad_performance_request(api_client: BingReportClient,
     report_request.Format = 'Csv'
     report_request.ReportName = 'My Ad Performance Report'
     report_request.ReturnOnlyCompleteData = False
+    scope = api_client.factory.create('AccountThroughCampaignReportScope')
+    scope.AccountIds={'long': config.oauth2_account_array()}
+    scope.Campaigns=None
+    report_request.Scope=scope
     if all_time:
         report_request.Aggregation = 'Yearly'
     else:
         report_request.Aggregation = 'Daily'
-    report_request.Language = 'English'
+    #report_request.Language = 'English'
     report_request.Time = set_report_time(api_client, current_date, all_time)
 
     report_columns = api_client.factory.create('ArrayOfAdPerformanceReportColumn')
@@ -384,11 +391,16 @@ def build_keyword_performance_request(api_client: BingReportClient,
     report_request.Format = 'Csv'
     report_request.ReportName = 'My Keyword Performance Report'
     report_request.ReturnOnlyCompleteData = False
+    scope = api_client.factory.create('AccountThroughCampaignReportScope')
+    scope.AccountIds={'long': config.oauth2_account_array()}
+    scope.Campaigns=None
+    report_request.Scope=scope
+
     if all_time:
         report_request.Aggregation = 'Yearly'
     else:
         report_request.Aggregation = 'Daily'
-    report_request.Language = 'English'
+    #report_request.Language = 'English'
 
     report_request.Time = set_report_time(api_client, current_date, all_time)
 
@@ -450,7 +462,11 @@ def build_campaign_performance_request(api_client: BingReportClient,
     report_request.Format = 'Csv'
     report_request.ReportName = 'My Campaign Performance Report'
     report_request.ReturnOnlyCompleteData = False
-    report_request.Language = 'English'
+    scope = api_client.factory.create('AccountThroughCampaignReportScope')
+    scope.AccountIds={'long': config.oauth2_account_array()}
+    scope.Campaigns=None
+    report_request.Scope=scope
+    #report_request.Language = 'English'
     if all_time:
         report_request.Aggregation = 'Yearly'
     else:

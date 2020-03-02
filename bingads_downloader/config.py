@@ -37,6 +37,17 @@ def oauth2_refresh_token() -> str:
     """The Oauth refresh token returned from the adwords-downloader-refresh-oauth2-token script"""
     return 'ABCDefgh!1234567890ABCDefgh!1234567890ABCDefgh!1234567890ABCDefgh!1234567890ABCDefgh!1234567890ABCDefgh!1234567890ABCDefgh!1234567890'
 
+def oauth2_customer_id() -> str:
+    """The customer ID for the person"""
+    return "438958943"
+
+def oauth2_account_id() -> str:
+    """The customer ID for the person"""
+    return "438958943"
+
+def oauth2_account_array():
+    """ Returns the list of accounts as an array"""
+    return ['435435435','435435435']
 
 def timeout() -> int:
     """The maximum amount of time (in milliseconds) that you want to wait for the report download"""
@@ -55,4 +66,4 @@ def retry_timeout_interval() -> int:
 
 def output_file_version() -> str:
     """A suffix that is added to output files, denoting a version of the data format"""
-    return 'v4'
+    return 'v3'
