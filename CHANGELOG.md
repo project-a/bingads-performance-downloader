@@ -1,5 +1,25 @@
 # Changelog
 
+## 4.0.0 (2020-03-02)
+
+- Changed the API so that it works with BingAds v13.
+- Added scope to the report requests so that they can query the Bingads server.
+- Removed language from the requests.
+- Changed version number to 4.0.0 and the required bingads library to 13.0.1.
+
+**required changes**
+
+If used together with mara_app, then add the following lines to `local_setup.py`:
+
+```
+patch(bingads_downloader.config.oauth2_customer_id)(lambda: 2435435)
+patch(bingads_downloader.config.oauth2_account_id)(lambda: 435435435)
+patch(bingads_downloader.config.output_file_version)(lambda: 'v4')
+patch(bingads_downloader.config.oauth2_account_array)(lambda: ['43543543','345435'])
+```
+
+A refresh of oauth2 Token needs to be run before running the downloads and updated.
+
 ## 3.0.0 (2019-04-12)
 
 - Change MARA_XXX variables to functions to delay importing of imports
